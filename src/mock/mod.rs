@@ -32,12 +32,12 @@ pub struct MockRemoteFs;
 
 impl RemoteFs for MockRemoteFs {
     #[allow(unused)]
-    fn connect(&self) -> crate::RemoteResult<crate::fs::Welcome> {
+    fn connect(&mut self) -> crate::RemoteResult<crate::fs::Welcome> {
         Ok(crate::fs::Welcome::default())
     }
 
     #[allow(unused)]
-    fn disconnect(&self) -> crate::RemoteResult<()> {
+    fn disconnect(&mut self) -> crate::RemoteResult<()> {
         Ok(())
     }
 

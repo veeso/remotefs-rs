@@ -49,10 +49,10 @@ pub trait RemoteFs {
     /// Connect to the remote server and authenticate.
     /// Can return banner / welcome message on success.
     /// If client has already established connection, then `AlreadyConnected` error is returned.
-    fn connect(&self) -> RemoteResult<Welcome>;
+    fn connect(&mut self) -> RemoteResult<Welcome>;
 
     /// Disconnect from the remote server
-    fn disconnect(&self) -> RemoteResult<()>;
+    fn disconnect(&mut self) -> RemoteResult<()>;
 
     /// Gets whether the client is connected to remote
     fn is_connected(&self) -> bool;
