@@ -32,37 +32,37 @@ pub struct MockRemoteFs;
 
 impl RemoteFs for MockRemoteFs {
     #[allow(unused)]
-    fn connect(&mut self) -> crate::RemoteResult<crate::fs::Welcome> {
+    fn connect(&self) -> crate::RemoteResult<crate::fs::Welcome> {
         Ok(crate::fs::Welcome::default())
     }
 
     #[allow(unused)]
-    fn disconnect(&mut self) -> crate::RemoteResult<()> {
+    fn disconnect(&self) -> crate::RemoteResult<()> {
         Ok(())
     }
 
     #[allow(unused)]
-    fn is_connected(&mut self) -> bool {
+    fn is_connected(&self) -> bool {
         true
     }
 
     #[allow(unused)]
-    fn pwd(&mut self) -> crate::RemoteResult<std::path::PathBuf> {
+    fn pwd(&self) -> crate::RemoteResult<std::path::PathBuf> {
         Ok(std::path::PathBuf::from("/"))
     }
 
     #[allow(unused)]
-    fn change_dir(&mut self, dir: &std::path::Path) -> crate::RemoteResult<std::path::PathBuf> {
+    fn change_dir(&self, dir: &std::path::Path) -> crate::RemoteResult<std::path::PathBuf> {
         Ok(dir.to_path_buf())
     }
 
     #[allow(unused)]
-    fn list_dir(&mut self, path: &std::path::Path) -> crate::RemoteResult<Vec<crate::File>> {
+    fn list_dir(&self, path: &std::path::Path) -> crate::RemoteResult<Vec<crate::File>> {
         Ok(vec![])
     }
 
     #[allow(unused)]
-    fn stat(&mut self, path: &std::path::Path) -> crate::RemoteResult<crate::File> {
+    fn stat(&self, path: &std::path::Path) -> crate::RemoteResult<crate::File> {
         Ok(crate::File {
             path: std::path::PathBuf::from("/foo"),
             metadata: crate::fs::Metadata::default(),
@@ -71,7 +71,7 @@ impl RemoteFs for MockRemoteFs {
 
     #[allow(unused)]
     fn setstat(
-        &mut self,
+        &self,
         path: &std::path::Path,
         metadata: crate::fs::Metadata,
     ) -> crate::RemoteResult<()> {
@@ -79,23 +79,23 @@ impl RemoteFs for MockRemoteFs {
     }
 
     #[allow(unused)]
-    fn exists(&mut self, path: &std::path::Path) -> crate::RemoteResult<bool> {
+    fn exists(&self, path: &std::path::Path) -> crate::RemoteResult<bool> {
         Ok(true)
     }
 
     #[allow(unused)]
-    fn remove_file(&mut self, path: &std::path::Path) -> crate::RemoteResult<()> {
+    fn remove_file(&self, path: &std::path::Path) -> crate::RemoteResult<()> {
         Ok(())
     }
 
     #[allow(unused)]
-    fn remove_dir(&mut self, path: &std::path::Path) -> crate::RemoteResult<()> {
+    fn remove_dir(&self, path: &std::path::Path) -> crate::RemoteResult<()> {
         Ok(())
     }
 
     #[allow(unused)]
     fn create_dir(
-        &mut self,
+        &self,
         path: &std::path::Path,
         mode: crate::fs::UnixPex,
     ) -> crate::RemoteResult<()> {
@@ -103,32 +103,28 @@ impl RemoteFs for MockRemoteFs {
     }
 
     #[allow(unused)]
-    fn symlink(
-        &mut self,
-        path: &std::path::Path,
-        target: &std::path::Path,
-    ) -> crate::RemoteResult<()> {
+    fn symlink(&self, path: &std::path::Path, target: &std::path::Path) -> crate::RemoteResult<()> {
         Ok(())
     }
 
     #[allow(unused)]
-    fn copy(&mut self, src: &std::path::Path, dest: &std::path::Path) -> crate::RemoteResult<()> {
+    fn copy(&self, src: &std::path::Path, dest: &std::path::Path) -> crate::RemoteResult<()> {
         Ok(())
     }
 
     #[allow(unused)]
-    fn mov(&mut self, src: &std::path::Path, dest: &std::path::Path) -> crate::RemoteResult<()> {
+    fn mov(&self, src: &std::path::Path, dest: &std::path::Path) -> crate::RemoteResult<()> {
         Ok(())
     }
 
     #[allow(unused)]
-    fn exec(&mut self, cmd: &str) -> crate::RemoteResult<(u32, String)> {
+    fn exec(&self, cmd: &str) -> crate::RemoteResult<(u32, String)> {
         Ok((0, String::default()))
     }
 
     #[allow(unused)]
     fn append(
-        &mut self,
+        &self,
         path: &std::path::Path,
         metadata: &crate::fs::Metadata,
     ) -> crate::RemoteResult<crate::fs::WriteStream> {
@@ -139,7 +135,7 @@ impl RemoteFs for MockRemoteFs {
 
     #[allow(unused)]
     fn create(
-        &mut self,
+        &self,
         path: &std::path::Path,
         metadata: &crate::fs::Metadata,
     ) -> crate::RemoteResult<crate::fs::WriteStream> {
@@ -149,7 +145,7 @@ impl RemoteFs for MockRemoteFs {
     }
 
     #[allow(unused)]
-    fn open(&mut self, path: &std::path::Path) -> crate::RemoteResult<crate::fs::ReadStream> {
+    fn open(&self, path: &std::path::Path) -> crate::RemoteResult<crate::fs::ReadStream> {
         Err(crate::RemoteError::new(
             crate::RemoteErrorType::UnsupportedFeature,
         ))

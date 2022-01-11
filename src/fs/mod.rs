@@ -49,40 +49,40 @@ pub trait RemoteFs {
     /// Connect to the remote server and authenticate.
     /// Can return banner / welcome message on success.
     /// If client has already established connection, then `AlreadyConnected` error is returned.
-    fn connect(&mut self) -> RemoteResult<Welcome>;
+    fn connect(&self) -> RemoteResult<Welcome>;
 
     /// Disconnect from the remote server
-    fn disconnect(&mut self) -> RemoteResult<()>;
+    fn disconnect(&self) -> RemoteResult<()>;
 
     /// Gets whether the client is connected to remote
-    fn is_connected(&mut self) -> bool;
+    fn is_connected(&self) -> bool;
 
     /// Get working directory
-    fn pwd(&mut self) -> RemoteResult<PathBuf>;
+    fn pwd(&self) -> RemoteResult<PathBuf>;
 
     /// Change working directory.
     /// Returns the realpath of new directory
-    fn change_dir(&mut self, dir: &Path) -> RemoteResult<PathBuf>;
+    fn change_dir(&self, dir: &Path) -> RemoteResult<PathBuf>;
 
     /// List directory entries at specified `path`
-    fn list_dir(&mut self, path: &Path) -> RemoteResult<Vec<File>>;
+    fn list_dir(&self, path: &Path) -> RemoteResult<Vec<File>>;
 
     /// Stat file at specified `path` and return Entry
-    fn stat(&mut self, path: &Path) -> RemoteResult<File>;
+    fn stat(&self, path: &Path) -> RemoteResult<File>;
 
     /// Set metadata for file at specified `path`
-    fn setstat(&mut self, path: &Path, metadata: Metadata) -> RemoteResult<()>;
+    fn setstat(&self, path: &Path, metadata: Metadata) -> RemoteResult<()>;
 
     /// Returns whether file at specified `path` exists.
-    fn exists(&mut self, path: &Path) -> RemoteResult<bool>;
+    fn exists(&self, path: &Path) -> RemoteResult<bool>;
 
     /// Remove file at specified `path`.
     /// Fails if is not a file or doesn't exist
-    fn remove_file(&mut self, path: &Path) -> RemoteResult<()>;
+    fn remove_file(&self, path: &Path) -> RemoteResult<()>;
 
     /// Remove directory at specified `path`
     /// Directory is removed only if empty
-    fn remove_dir(&mut self, path: &Path) -> RemoteResult<()>;
+    fn remove_dir(&self, path: &Path) -> RemoteResult<()>;
 
     /// Removes a directory at this path, after removing all its contents. **Use carefully!**
     ///
@@ -94,7 +94,7 @@ pub trait RemoteFs {
     ///
     /// By default this method will combine `remove_file` and `remove_file` to remove all the content.
     /// Implement this method when there is a faster way to achieve this
-    fn remove_dir_all(&mut self, path: &Path) -> RemoteResult<()> {
+    fn remove_dir_all(&self, path: &Path) -> RemoteResult<()> {
         if self.is_connected() {
             let path = crate::utils::path::absolutize(&self.pwd()?, path);
             debug!("Removing {}...", path.display());
@@ -123,20 +123,20 @@ pub trait RemoteFs {
     }
 
     /// Create a directory at `path` with specified mode.
-    fn create_dir(&mut self, path: &Path, mode: UnixPex) -> RemoteResult<()>;
+    fn create_dir(&self, path: &Path, mode: UnixPex) -> RemoteResult<()>;
 
     /// Create a symlink at `path` pointing at `target`
-    fn symlink(&mut self, path: &Path, target: &Path) -> RemoteResult<()>;
+    fn symlink(&self, path: &Path, target: &Path) -> RemoteResult<()>;
 
     /// Copy `src` to `dest`
-    fn copy(&mut self, src: &Path, dest: &Path) -> RemoteResult<()>;
+    fn copy(&self, src: &Path, dest: &Path) -> RemoteResult<()>;
 
     /// move file/directory from `src` to `dest`
-    fn mov(&mut self, src: &Path, dest: &Path) -> RemoteResult<()>;
+    fn mov(&self, src: &Path, dest: &Path) -> RemoteResult<()>;
 
     /// Execute a command on remote host if supported by host.
     /// Returns command exit code and output (stdout)
-    fn exec(&mut self, cmd: &str) -> RemoteResult<(u32, String)>;
+    fn exec(&self, cmd: &str) -> RemoteResult<(u32, String)>;
 
     /// Open file at `path` for appending data.
     /// If the file doesn't exist, the file is created.
@@ -145,7 +145,7 @@ pub trait RemoteFs {
     ///
     /// metadata should be the same of the local file.
     /// In some protocols, such as `scp` the `size` field is used to define the transfer size (required by the protocol)
-    fn append(&mut self, path: &Path, metadata: &Metadata) -> RemoteResult<WriteStream>;
+    fn append(&self, path: &Path, metadata: &Metadata) -> RemoteResult<WriteStream>;
 
     /// Create file at path for write.
     /// If the file already exists, its content will be overwritten
@@ -154,10 +154,10 @@ pub trait RemoteFs {
     ///
     /// metadata should be the same of the local file.
     /// In some protocols, such as `scp` the `size` field is used to define the transfer size (required by the protocol)
-    fn create(&mut self, path: &Path, metadata: &Metadata) -> RemoteResult<WriteStream>;
+    fn create(&self, path: &Path, metadata: &Metadata) -> RemoteResult<WriteStream>;
 
     /// Open file at specified path for read.
-    fn open(&mut self, path: &Path) -> RemoteResult<ReadStream>;
+    fn open(&self, path: &Path) -> RemoteResult<ReadStream>;
 
     /// Finalize `create_file` and `append_file` methods.
     /// This method must be implemented only if necessary; in case you don't need it, just return `Ok(())`
@@ -168,7 +168,7 @@ pub trait RemoteFs {
     /// ### Default implementation
     ///
     /// By default this function returns already `Ok(())`
-    fn on_written(&mut self, _writable: WriteStream) -> RemoteResult<()> {
+    fn on_written(&self, _writable: WriteStream) -> RemoteResult<()> {
         Ok(())
     }
 
@@ -181,7 +181,7 @@ pub trait RemoteFs {
     /// ### Default implementation
     ///
     /// By default this function returns already `Ok(())`
-    fn on_read(&mut self, _readable: ReadStream) -> RemoteResult<()> {
+    fn on_read(&self, _readable: ReadStream) -> RemoteResult<()> {
         Ok(())
     }
 
@@ -195,7 +195,7 @@ pub trait RemoteFs {
     ///
     /// By default this function uses the streams function to copy content from reader to writer
     fn append_file(
-        &mut self,
+        &self,
         path: &Path,
         metadata: &Metadata,
         mut reader: Box<dyn Read>,
@@ -223,7 +223,7 @@ pub trait RemoteFs {
     ///
     /// By default this function uses the streams function to copy content from reader to writer
     fn create_file(
-        &mut self,
+        &self,
         path: &Path,
         metadata: &Metadata,
         mut reader: Box<dyn Read>,
@@ -251,7 +251,7 @@ pub trait RemoteFs {
     /// ### Default implementation
     ///
     /// By default this function uses the streams function to copy content from reader to writer
-    fn open_file(&mut self, src: &Path, mut dest: Box<dyn Write + Send>) -> RemoteResult<u64> {
+    fn open_file(&self, src: &Path, mut dest: Box<dyn Write + Send>) -> RemoteResult<u64> {
         if self.is_connected() {
             let mut stream = self.open(src)?;
             trace!("File opened");
@@ -268,7 +268,7 @@ pub trait RemoteFs {
     /// Find files from current directory (in all subdirectories) whose name matches the provided search
     /// Search supports wildcards ('?', '*')
     #[cfg(feature = "find")]
-    fn find(&mut self, search: &str) -> RemoteResult<Vec<File>> {
+    fn find(&self, search: &str) -> RemoteResult<Vec<File>> {
         match self.is_connected() {
             true => {
                 // Starting from current directory, iter dir
@@ -288,7 +288,7 @@ pub trait RemoteFs {
     /// NOTE: DON'T RE-IMPLEMENT THIS FUNCTION, unless the file transfer provides a faster way to do so
     /// NOTE: don't call this method from outside; consider it as private
     #[cfg(feature = "find")]
-    fn iter_search(&mut self, dir: &Path, filter: &WildMatch) -> RemoteResult<Vec<File>> {
+    fn iter_search(&self, dir: &Path, filter: &WildMatch) -> RemoteResult<Vec<File>> {
         let mut drained: Vec<File> = Vec::new();
         // Scan directory
         match self.list_dir(dir) {
