@@ -14,7 +14,6 @@ repository = "https://github.com/veeso/remotefs-rs"
 version = "0.2.0"
 
 [dependencies]
-chrono = "^0.4.19"
 log = "^0.4.14"
 thiserror = "^1.0.0"
 wildmatch = { version = "^2.0.0", optional = true }
@@ -25,9 +24,9 @@ pretty_assertions = "^1.0.0"
 tempfile = "^3.2.0"
 
 [features]
-default = [ "find" ]
+default = ["find"]
 # misc
-find = [ "wildmatch" ]
-no-log = [ "log/max_level_off" ]
+find = ["wildmatch"]
+no-log = ["log/max_level_off"]
 # tests
 github-actions = []
